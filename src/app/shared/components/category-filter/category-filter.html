@@ -1,0 +1,39 @@
+
+  <div class="catalog-filter" [class.open]="open">
+    <div class="catalog-filter-head" (click)="toggle()">
+      <span>{{ title }}</span>
+      @if (open){
+        <svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M7.22337 -3.14713e-05C7.80671 -3.14713e-05 8.39004 0.224967 8.83171 0.666634L14.265 6.09997C14.5067 6.34163 14.5067 6.74163 14.265 6.9833C14.0234 7.22497 13.6234 7.22497 13.3817 6.9833L7.94837 1.54997C7.54837 1.14997 6.89837 1.14997 6.49837 1.54997L1.06504 6.9833C0.823374 7.22497 0.423372 7.22497 0.181705 6.9833C-0.0599604 6.74163 -0.0599604 6.34163 0.181705 6.09997L5.61504 0.666634C6.05671 0.224967 6.64004 -3.14713e-05 7.22337 -3.14713e-05Z"
+            fill="#2C2C2C"/>
+        </svg>
+      } @else {
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10.0003 14C9.41693 14 8.83359 13.775 8.39193 13.3334L2.95859 7.90003C2.71693 7.65837 2.71693 7.25837 2.95859 7.0167C3.20026 6.77503 3.60026 6.77503 3.84193 7.0167L9.27526 12.45C9.67526 12.85 10.3253 12.85 10.7253 12.45L16.1586 7.0167C16.4003 6.77503 16.8003 6.77503 17.0419 7.0167C17.2836 7.25837 17.2836 7.65837 17.0419 7.90003L11.6086 13.3334C11.1669 13.775 10.5836 14 10.0003 14Z"
+            fill="#2C2C2C"/>
+        </svg>
+      }
+
+    </div>
+
+    <div class="catalog-filter-body">
+      @for (type of categoriesWithType?.types; track type) {
+        <label class="catalog-filter-checkbox">
+          <input type="checkbox" #input
+                 [checked]="activeParams.types.includes(type.url)"
+                 (change)="updateFilterParam(type.url,input.checked)"> <span>{{ type.name }}</span>
+        </label>
+      }
+      @if (type) {
+        <div class="catalog-filter-from-to">
+          <span>от</span>
+          <input type="number" min="0" step="1" [ngModel]="from" (ngModelChange)="updateFilterParamFromTo(type+'From', $event)" class="small-input">
+          <span>до</span>
+          <input type="number" min="0" step="1" [ngModel]="to" (ngModelChange)="updateFilterParamFromTo(type+'To', $event)" class="small-input">
+          <span>см</span>
+        </div>
+      }
+    </div>
+  </div>

@@ -3,18 +3,32 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
+import { Layout } from './shared/layout/layout';
+import { Header } from './shared/layout/header/header';
+import { Footer } from './shared/layout/footer/footer';
+import { Main } from './views/main/main';
+import { provideHttpClient } from '@angular/common/http';
+import { MatMenuModule } from '@angular/material/menu';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
+import { SharedModule } from './shared/shared-module';
+import { CarouselModule } from 'ngx-owl-carousel-o';
+// import { CategoryFilter } from './views/components/category-filter/category-filter';
 
 @NgModule({
-  declarations: [
-    App
-  ],
+  declarations: [App, Layout, Header, Footer, Main],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    MatSnackBarModule,
+    MatMenuModule,
+    SharedModule,
+    CarouselModule,
+    AppRoutingModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
   ],
-  bootstrap: [App]
+  bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}
