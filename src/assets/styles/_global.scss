@@ -1,3 +1,5 @@
+@import "variables";
+
 html, body {
   margin: 0;
   padding: 0;
@@ -22,7 +24,7 @@ html, body {
   width: 100%;
 }
 
-.small-input{
+.small-input {
   border: 1px solid #6cac72;
   border-radius: 5px;
   width: 40px;
@@ -49,9 +51,48 @@ html, body {
   font-size: 16px;
   color: #FFFFFF;
 
+  &.button-transparent {
+    background-color: transparent;
+    border: 1px solid #6cac72;
+    color: $green-text-color;
+  }
+
+  &.button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      margin-left: 16px;
+    }
+  }
+
   &:disabled {
     background: gray;
     cursor: not-allowed;
+  }
+
+  &.button-in-cart span {
+    &:first-child {
+      display: block;
+    }
+
+    &:last-child {
+      display: none;
+    }
+  }
+
+  &:hover {
+
+    &.button-in-cart span {
+      &:first-child {
+        display: none;
+      }
+
+      &:last-child {
+        display: block;
+      }
+    }
   }
 }
 
@@ -67,5 +108,30 @@ a.button {
   a {
     text-decoration: none;
     color: $gray-text-color;
+  }
+}
+
+.carousel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 50px;
+
+  .carousel-title {
+    @include head-lora-32
+  }
+
+  .carousel-arrows {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    a {
+      cursor: pointer;
+
+      &:first-child {
+        margin-right: 30px;
+      }
+    }
   }
 }

@@ -39,7 +39,7 @@ export class Main implements OnInit {
     },
     nav: false
   }
-  // настройки для карусели продуктов
+  // настройки для карусели отзывов
   customOptionsReviews: OwlOptions = {
     loop: true,
     mouseDrag: false,

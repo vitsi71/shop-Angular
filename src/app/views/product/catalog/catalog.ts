@@ -8,6 +8,8 @@ import {ActiveParamsUtil} from '../../../shared/utils/active-params.util';
 import {ActiveParamsType} from '../../../../types/active-params.type';
 import {AppliedFilterType} from '../../../../types/applied-filter.type';
 import {debounceTime} from 'rxjs';
+import {CartService} from '../../../shared/services/cart.service';
+import {CartType} from '../../../../types/cart.type';
 
 @Component({
   selector: 'app-catalog',
@@ -31,13 +33,21 @@ export class Catalog implements OnInit {
     {name: 'По убыванию цены', value: 'price-desc'},
   ];
 
-  pages: number[] = []
+  pages: number[] = [];
+  cart: WritableSignal<CartType | null> = signal<CartType | null>(null);
+
 
   constructor(private productService: ProductService, private categoryService: CategoryService,
-              private router: Router, private activatedRoute: ActivatedRoute) {
+              private router: Router, private activatedRoute: ActivatedRoute, private cartService: CartService) {
   }
 
   ngOnInit() {
+
+    this.cartService.getCart()
+      .subscribe((dataCart: CartType) => {
+        this.cart.set(dataCart);
+      })
+
     this.categoryService.getCategoriesWithTypes()
       .subscribe(data => {
         this.categoriesWithTypes.set(data);
@@ -93,7 +103,17 @@ export class Catalog implements OnInit {
                 for (let i = 1; i <= data.pages; i++) {
                   this.pages.push(i);
                 }
-                this.products.set(data.items);
+                if (this.cart() && this.cart()!.items.length > 0) {
+                  this.products.set(data.items.map(product => {
+                    const productInCart = this.cart()?.items.find(item => item.product.id === product.id);
+                    if (productInCart) {
+                      product.countInCart = productInCart.quantity;
+                    }
+                    return product;
+                  }));
+                } else {
+                  this.products.set(data.items);
+                }
               })
           });
       })
