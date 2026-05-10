@@ -34,7 +34,7 @@
           </svg>
         </div>
         <div class="catalog-sorting-body">
-          @for (sortingOption of sortingOptions; track  $index) {
+          @for (sortingOption of sortingOptions; track  sortingOption.name) {
             <div class="catalog-sorting-item"
                  [class.active]="this.activeParams.sort ? this.activeParams.sort === sortingOption.value:false"
                  (click)="sort(sortingOption.value)">{{ sortingOption.name }}
@@ -46,7 +46,7 @@
 
     <div class="catalog-layout">
       <div class="catalog-filters">
-        @for (categoriesWithType of categoriesWithTypes(); track $index) {
+        @for (categoriesWithType of categoriesWithTypes(); track categoriesWithType.id) {
           <category-filter [categoriesWithType]="categoriesWithType"></category-filter>
         }
         <category-filter type="height"></category-filter>
