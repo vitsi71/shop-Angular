@@ -1,8 +1,9 @@
-import {Component, Input, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges, WritableSignal} from '@angular/core';
 import {ProductType} from '../../../../types/product.type';
 import {environment} from '../../../../environments/environment';
 import {CartService} from '../../services/cart.service';
 import {CartType} from '../../../../types/cart.type';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-product-card',
@@ -10,34 +11,45 @@ import {CartType} from '../../../../types/cart.type';
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss',
 })
-export class ProductCard implements OnInit{
+export class ProductCard implements OnInit, OnChanges, OnDestroy {
 
   @Input() product!: ProductType;
   serverStaticPath: string = environment.serverStaticPath;
   count: number = 1;
   @Input() isLite: boolean = false;
-  @Input() countInCart: number | undefined=0;
-  isInCart: WritableSignal<boolean> = signal<boolean>(false)
-  // isInCart: WritableSignal<number | undefined> = signal<number | undefined>(0)
+  @Input() countInCart: number | undefined = 0;
+  isInCart: WritableSignal<boolean> = signal<boolean>(false);
+  private cartStateSubscription: Subscription | null = null;
 
 
   constructor(private cartService:CartService ) {
   }
 
   ngOnInit() {
-    if (this.countInCart){
-      this.count=this.countInCart;
-      // this.isInCart.set(this.count);
-      this.isInCart.set(true);
+    this.syncCartState();
+    this.cartStateSubscription = this.cartService.cartStateChanged$.subscribe(() => {
+      this.countInCart = this.cartService.getProductQuantity(this.product.id);
+      this.product.countInCart = this.countInCart;
+      this.syncCartState();
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['countInCart'] || changes['product']) {
+      this.syncCartState();
     }
+  }
+
+  ngOnDestroy() {
+    this.cartStateSubscription?.unsubscribe();
   }
 
   addToCart() {
     this.cartService.updateCart(this.product.id, this.count)
       .subscribe((data: CartType) => {
-        // this.isInCart.set(this.count);
+        this.countInCart = this.count;
+        this.product.countInCart = this.count;
         this.isInCart.set(true);
-        this.countInCart=this.count;
       })
   }
 
@@ -46,8 +58,8 @@ export class ProductCard implements OnInit{
     if (this.isInCart()) {
       this.cartService.updateCart(this.product.id, this.count)
         .subscribe((data: CartType) => {
-          this.countInCart=this.count;
-          // this.isInCart.set(this.count);
+          this.countInCart = this.count;
+          this.product.countInCart = this.count;
           this.isInCart.set(true);
         })
     }
@@ -56,11 +68,22 @@ export class ProductCard implements OnInit{
   removeFromCart() {
     this.cartService.updateCart(this.product.id, 0)
       .subscribe((data: CartType) => {
-        this.countInCart=0;
-        // this.isInCart.set(0);
-        this.isInCart.set(false);
+        this.countInCart = 0;
+        this.product.countInCart = 0;
         this.count = 1;
+        this.isInCart.set(false);
       })
+  }
+
+  private syncCartState() {
+    if (this.countInCart && this.countInCart > 0) {
+      this.count = this.countInCart ?? 1;
+      this.isInCart.set(true);
+      return;
+    }
+
+    this.count = 1;
+    this.isInCart.set(false);
   }
 
 }

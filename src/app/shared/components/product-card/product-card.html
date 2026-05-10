@@ -1,5 +1,5 @@
 @if (product) {
-  <div class="product-card" [routerLink]="isLite ? ['/product/'+product.url] : []" [class.isLite]="isLite">
+  <div class="product-card" [routerLink]="isLite ? ['/product/'+product.url] : null" [class.isLite]="isLite">
     @if (!isLite){
     <div class="product-card-favorite">
 

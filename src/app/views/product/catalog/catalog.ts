@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, OnInit, signal, WritableSignal} from '@angular/core';
 import {ProductService} from '../../../shared/services/product.service';
 import {ProductType} from '../../../../types/product.type';
 import {CategoryService} from '../../../shared/services/category.service';
@@ -103,17 +103,10 @@ export class Catalog implements OnInit {
                 for (let i = 1; i <= data.pages; i++) {
                   this.pages.push(i);
                 }
-                if (this.cart() && this.cart()!.items.length > 0) {
-                  this.products.set(data.items.map(product => {
-                    const productInCart = this.cart()?.items.find(item => item.product.id === product.id);
-                    if (productInCart) {
-                      product.countInCart = productInCart.quantity;
-                    }
-                    return product;
-                  }));
-                } else {
-                  this.products.set(data.items);
-                }
+                this.products.set(data.items.map(product => {
+                  product.countInCart = this.cartService.getProductQuantity(product.id);
+                  return product;
+                }));
               })
           });
       })

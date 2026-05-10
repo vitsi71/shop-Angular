@@ -31,11 +31,11 @@ export class Header implements OnInit {
     })
     this.cartService.getCartCount()
       .subscribe((data => {
-        this.count.set(data.count);
+        this.count.set((data as {count:number}).count);
       }))
     this.cartService.count$
       .subscribe((count => {
-        this.count.set(count);
+        this.count.set(count as number);
       }))
 
 

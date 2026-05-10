@@ -54,7 +54,7 @@
       </div>
 
       <div class="catalog-products">
-        @for (product of products(); track $index) {
+        @for (product of products(); track product.id) {
           <app-product-card [countInCart]="product.countInCart" [product]="product"></app-product-card>
         }
       </div>

@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {OwlOptions} from 'ngx-owl-carousel-o';
 import {ProductType} from '../../../../types/product.type';
 import {ProductService} from '../../../shared/services/product.service';
@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {environment} from '../../../../environments/environment';
 import {CartType} from '../../../../types/cart.type';
 import {CartService} from '../../../shared/services/cart.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-detail',
@@ -13,7 +14,7 @@ import {CartService} from '../../../shared/services/cart.service';
   templateUrl: './detail.html',
   styleUrl: './detail.scss',
 })
-export class Detail implements OnInit {
+export class Detail implements OnInit, OnDestroy {
 
   recommendedProducts: WritableSignal<ProductType[]> = signal<ProductType[]>([]);
   product: WritableSignal<ProductType | null> = signal<ProductType | null>(null);
@@ -21,6 +22,7 @@ export class Detail implements OnInit {
 
   isInCart: WritableSignal<boolean> = signal<boolean>(false)
   count: number = 1;
+  private cartStateSubscription: Subscription | null = null;
 
   // настройки для карусели продуктов
   customOptions: OwlOptions = {
@@ -53,21 +55,22 @@ export class Detail implements OnInit {
   }
 
   ngOnInit() {
-    this.isInCart.set(false);
+    this.cartStateSubscription = this.cartService.cartStateChanged$.subscribe(() => {
+      this.syncCurrentProductWithCart();
+      this.syncRecommendedProductsWithCart();
+    });
+
     this.activatedRoute.params.subscribe(params => {
       this.productService.getProduct(params['url'])
         .subscribe((data: ProductType) => {
 
           this.cartService.getCart()
             .subscribe((dataCart: CartType) => {
-              if (dataCart) {
-                const productInCart = dataCart.items.find(item => item.product.id === data.id)
-
-                if (productInCart) {
-                  data.countInCart = productInCart.quantity;
-                  this.count=data.countInCart;
-                }
-              }
+              const quantityInCart = this.cartService.getProductQuantity(data.id);
+              data.countInCart = quantityInCart;
+              this.count = quantityInCart > 0 ? quantityInCart : 1;
+              this.isInCart.set(this.cartService.isProductInCart(data.id));
+              this.syncRecommendedProductsWithCart();
               this.product.set(data);
             })
         })
@@ -77,8 +80,15 @@ export class Detail implements OnInit {
 
     this.productService.getBestProducts()
       .subscribe((data: ProductType[]) => {
-        this.recommendedProducts.set(data);
+        this.recommendedProducts.set(data.map(product => {
+          product.countInCart = this.cartService.getProductQuantity(product.id);
+          return product;
+        }));
       })
+  }
+
+  ngOnDestroy() {
+    this.cartStateSubscription?.unsubscribe();
   }
 
   updateCount(value: number) {
@@ -117,6 +127,26 @@ export class Detail implements OnInit {
         this.isInCart.set(false);
 
       })
+  }
+
+  private syncRecommendedProductsWithCart() {
+    this.recommendedProducts.set(this.recommendedProducts().map(product => {
+      product.countInCart = this.cartService.getProductQuantity(product.id);
+      return product;
+    }));
+  }
+
+  private syncCurrentProductWithCart() {
+    const currentProduct = this.product();
+    if (!currentProduct) {
+      return;
+    }
+
+    const quantityInCart = this.cartService.getProductQuantity(currentProduct.id);
+    currentProduct.countInCart = quantityInCart;
+    this.count = quantityInCart > 0 ? quantityInCart : 1;
+    this.isInCart.set(this.cartService.isProductInCart(currentProduct.id));
+    this.product.set({...currentProduct});
   }
 
 }
