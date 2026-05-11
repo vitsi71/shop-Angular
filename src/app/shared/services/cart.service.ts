@@ -12,7 +12,6 @@ export class CartService {
   count:number=0;
   count$:Subject<number>=new Subject<number>();
   cartStateChanged$: Subject<void> = new Subject<void>();
-  private favoriteProductIds: Set<string> = new Set<string>();
   private cartProductQuantities: Map<string, number> = new Map<string, number>();
 
   constructor(private http:HttpClient) {
