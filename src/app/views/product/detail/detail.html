@@ -120,7 +120,7 @@
             <div class="detail-info-params-price">{{ product()!.price }} BYN</div>
           </div>
 
-          <div class="detail-info-actions" (click)="addToFavorite()">
+          <div class="detail-info-actions" (click)="updateFavorite()">
             <button class="button button-transparent button-icon">
               @if (isInFavorite()){
                 <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">

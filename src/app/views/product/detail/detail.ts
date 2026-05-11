@@ -10,6 +10,8 @@ import {Subscription} from 'rxjs';
 import {FavoriteService} from '../../../shared/services/favorite.service';
 import {FavoriteType} from '../../../../types/favorite.type';
 import {DefaultResponseType} from '../../../../types/default-response.type';
+import {AuthService} from '../../../core/auth/auth.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-detail',
@@ -55,7 +57,7 @@ export class Detail implements OnInit, OnDestroy {
     nav: false
   }
 
-  constructor(private favoriteService: FavoriteService, private productService: ProductService, private cartService: CartService, private activatedRoute: ActivatedRoute) {
+  constructor(private _snackBar: MatSnackBar, private authService: AuthService, private favoriteService: FavoriteService, private productService: ProductService, private cartService: CartService, private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -67,18 +69,31 @@ export class Detail implements OnInit, OnDestroy {
     this.activatedRoute.params.subscribe(params => {
       this.productService.getProduct(params['url'])
         .subscribe((data: ProductType) => {
-
+          this.product.set(data);
           this.cartService.getCart()
             .subscribe((dataCart: CartType) => {
               const quantityInCart = this.cartService.getProductQuantity(data.id);
-              data.countInCart = quantityInCart;
+              this.product()!.countInCart = quantityInCart;
               this.count = quantityInCart > 0 ? quantityInCart : 1;
               this.isInCart.set(this.cartService.isProductInCart(data.id));
               this.syncRecommendedProductsWithCart();
-              this.product.set(data);
             })
-        })
+          if (this.authService.getIsLoggedIn()) {
+            this.favoriteService.getFavorites()
+              .subscribe((data: FavoriteType[] | DefaultResponseType) => {
+                if ((data as DefaultResponseType).error !== undefined) {
+                  throw new Error((data as DefaultResponseType).message);
+                }
+                const productsInFavorite = data as FavoriteType[];
+                const currentProductExist: FavoriteType | undefined = productsInFavorite.find(item => item.id === this.product()!.id)
+                if (currentProductExist) {
+                  this.product()!.isInFavorite = true;
+                  this.isInFavorite.set(true);
+                }
 
+              })
+          }
+        })
     })
 
 
@@ -153,16 +168,33 @@ export class Detail implements OnInit, OnDestroy {
     this.product.set({...currentProduct});
   }
 
-  addToFavorite() {
-    this.favoriteService.addFavorite(this.product()!.id)
-      .subscribe((data: FavoriteType | DefaultResponseType) => {
-        if ((data as DefaultResponseType).error !== undefined) {
-          throw new Error((data as DefaultResponseType).message);
-        }
-        this.product()!.isInFavorite = true;
-        this.isInFavorite.set(true);
+  updateFavorite() {
 
-      })
+    if (!this.authService.getIsLoggedIn()) {
+      this._snackBar.open("Для добавления в избранное необходимо авторизоваться");
+      return;
+    }
+    if (this.isInFavorite()) {
+      this.favoriteService.removeFavorite(this.product()!.id)
+        .subscribe((data: DefaultResponseType) => {
+          if (data.error) {
+            throw new Error(data.message);
+          }
+          this.product()!.isInFavorite = false;
+          this.isInFavorite.set(false);
+        })
+    } else {
+      this.favoriteService.addFavorite(this.product()!.id)
+        .subscribe((data: FavoriteType | DefaultResponseType) => {
+          if ((data as DefaultResponseType).error !== undefined) {
+            throw new Error((data as DefaultResponseType).message);
+          }
+          this.product()!.isInFavorite = true;
+          this.isInFavorite.set(true);
+
+        })
+    }
   }
+
 
 }
