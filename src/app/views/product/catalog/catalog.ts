@@ -10,6 +10,10 @@ import {AppliedFilterType} from '../../../../types/applied-filter.type';
 import {debounceTime} from 'rxjs';
 import {CartService} from '../../../shared/services/cart.service';
 import {CartType} from '../../../../types/cart.type';
+import {AuthService} from '../../../core/auth/auth.service';
+import {FavoriteService} from '../../../shared/services/favorite.service';
+import {FavoriteType} from '../../../../types/favorite.type';
+import {DefaultResponseType} from '../../../../types/default-response.type';
 
 @Component({
   selector: 'app-catalog',
@@ -35,9 +39,9 @@ export class Catalog implements OnInit {
 
   pages: number[] = [];
   cart: WritableSignal<CartType | null> = signal<CartType | null>(null);
+  productsInFavorite: WritableSignal<FavoriteType[] | null> = signal<FavoriteType[] | null>(null);
 
-
-  constructor(private productService: ProductService, private categoryService: CategoryService,
+  constructor(private authService: AuthService, private favoriteService: FavoriteService, private productService: ProductService, private categoryService: CategoryService,
               private router: Router, private activatedRoute: ActivatedRoute, private cartService: CartService) {
   }
 
@@ -46,72 +50,118 @@ export class Catalog implements OnInit {
     this.cartService.getCart()
       .subscribe((dataCart: CartType) => {
         this.cart.set(dataCart);
-      })
-
-    this.categoryService.getCategoriesWithTypes()
-      .subscribe(data => {
-        this.categoriesWithTypes.set(data);
-
-        this.activatedRoute.queryParams
-          .pipe(
-            debounceTime(500) // задержка запроса на время набора данных абонентом
-          )
-          .subscribe(params => {
-            this.activeParams = ActiveParamsUtil.processParams(params);
-            this.appliedFilters = [];
-            this.activeParams.types.forEach(url => {
-              for (let i = 0; i < this.categoriesWithTypes().length; i++) {
-
-                const foundType = this.categoriesWithTypes()[i].types.find(type => type.url === url)
-                if (foundType) {
-                  this.appliedFilters.push({
-                    name: foundType.name,
-                    urlParam: foundType.url
-                  })
+        if (this.authService.getIsLoggedIn()) {
+          this.favoriteService.getFavorites()
+            .subscribe({
+                next: (data: FavoriteType[] | DefaultResponseType) => {
+                  if ((data as DefaultResponseType).error !== undefined) {
+                    this.processCatalog();
+                    throw new Error((data as DefaultResponseType).message);
+                  }
+                  this.productsInFavorite.set(data as FavoriteType[]);
+                   this.processCatalog();
+                  console.log(this.products());
+                },
+                error: (error) => {
+                  this.processCatalog();
                 }
               }
-            });
+            )
+        } else {
+          this.processCatalog();
+        }
+        console.log(this.favoriteService.favoriteProductIds);
 
-            if (this.activeParams.heightFrom) {
-              this.appliedFilters.push({
-                name: 'Высота от ' + this.activeParams.heightFrom + ' см',
-                urlParam: 'heightFrom'
-              })
-            }
-            if (this.activeParams.heightTo) {
-              this.appliedFilters.push({
-                name: 'Высота до ' + this.activeParams.heightTo + ' см',
-                urlParam: 'heightTo'
-              })
-            }
-            if (this.activeParams.diameterFrom) {
-              this.appliedFilters.push({
-                name: 'Диаметр от ' + this.activeParams.diameterFrom + ' см',
-                urlParam: 'diameterFrom'
-              })
-            }
-            if (this.activeParams.diameterTo) {
-              this.appliedFilters.push({
-                name: 'Диаметр до ' + this.activeParams.diameterTo + ' см',
-                urlParam: 'diameterTo'
-              })
-            }
 
-            this.productService.getProducts(this.activeParams)
-              .subscribe(data => {
-                this.pages = [];
-                for (let i = 1; i <= data.pages; i++) {
-                  this.pages.push(i);
-                }
-                this.products.set(data.items.map(product => {
-                  product.countInCart = this.cartService.getProductQuantity(product.id);
-                  return product;
-                }));
-              })
-          });
       })
 
 
+  }
+
+  processCatalog() {
+    this.categoryService.getCategoriesWithTypes()
+      .subscribe(data => {
+          this.categoriesWithTypes.set(data);
+
+          this.activatedRoute.queryParams
+            .pipe(
+              debounceTime(500) // задержка запроса на время набора данных абонентом
+            )
+            .subscribe(params => {
+              this.activeParams = ActiveParamsUtil.processParams(params);
+              this.appliedFilters = [];
+              this.activeParams.types.forEach(url => {
+                for (let i = 0; i < this.categoriesWithTypes().length; i++) {
+
+                  const foundType = this.categoriesWithTypes()[i].types.find(type => type.url === url)
+                  if (foundType) {
+                    this.appliedFilters.push({
+                      name: foundType.name,
+                      urlParam: foundType.url
+                    })
+                  }
+                }
+              });
+
+              if (this.activeParams.heightFrom) {
+                this.appliedFilters.push({
+                  name: 'Высота от ' + this.activeParams.heightFrom + ' см',
+                  urlParam: 'heightFrom'
+                })
+              }
+              if (this.activeParams.heightTo) {
+                this.appliedFilters.push({
+                  name: 'Высота до ' + this.activeParams.heightTo + ' см',
+                  urlParam: 'heightTo'
+                })
+              }
+              if (this.activeParams.diameterFrom) {
+                this.appliedFilters.push({
+                  name: 'Диаметр от ' + this.activeParams.diameterFrom + ' см',
+                  urlParam: 'diameterFrom'
+                })
+              }
+              if (this.activeParams.diameterTo) {
+                this.appliedFilters.push({
+                  name: 'Диаметр до ' + this.activeParams.diameterTo + ' см',
+                  urlParam: 'diameterTo'
+                })
+              }
+
+              this.productService.getProducts(this.activeParams)
+                .subscribe(data => {
+                  this.pages = [];
+                  for (let i = 1; i <= data.pages; i++) {
+                    this.pages.push(i);
+                  }
+                  this.products.set(data.items.map(product => {
+                    product.countInCart = this.cartService.getProductQuantity(product.id);
+                    if (this.productsInFavorite() && this.productsInFavorite()!.length > 0) {
+                      const productIsInFavorite = this.productsInFavorite()?.find(item => item.id === product.id);
+                      if (productIsInFavorite) {
+                        product.isInFavorite = true;
+                      }
+                    }
+
+                    return product;
+
+                  }));
+                  console.log(this.products());
+                  // if (this.productsInFavorite() && this.productsInFavorite()!.length > 0) {
+                  //   this.products.set(this.products().map(product => {
+                  //     const productIsInFavorite = this.productsInFavorite()?.find(item => item.id === product.id);
+                  //     if (productIsInFavorite) {
+                  //       product.isInFavorite = true;
+                  //     }
+                  //     return product;
+                  //   }));
+
+                })
+
+
+            });
+        }
+      )
   }
 
   removeAppliedFilter(appliedFilter: AppliedFilterType) {

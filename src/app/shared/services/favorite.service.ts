@@ -1,30 +1,67 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, Subject, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {FavoriteType} from '../../../types/favorite.type';
 import {DefaultResponseType} from '../../../types/default-response.type';
+import {CartService} from './cart.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FavoriteService {
 
-  //private favoriteProductIds: Set<string> = new Set<string>();
-  constructor(private http: HttpClient) {
+  favoriteProductIds: Set<string> = new Set<string>();
+  favoriteStateChanged$: Subject<void> = new Subject<void>();
+
+  constructor(private http: HttpClient,private cartService:CartService) {
   }
 
   getFavorites(): Observable<FavoriteType[] | DefaultResponseType> {
     return this.http.get<FavoriteType[] | DefaultResponseType>(environment.api + 'favorites')
+      .pipe(
+        tap((data: FavoriteType[] | DefaultResponseType) => {
+          if (!((data as DefaultResponseType).error !== undefined)) {
+            this.syncLocalFavoriteState(data as FavoriteType[]);
+          }
+        })
+      )
   }
 
   removeFavorite(productId: string): Observable<DefaultResponseType> {
-    return this.http.delete<DefaultResponseType>(environment.api + 'favorites', {body: {productId}});
+    return this.http.delete<DefaultResponseType>(environment.api + 'favorites', {body: {productId}})
+      .pipe(
+        tap((data: DefaultResponseType) => {
+          if (!data.error !== undefined) {
+            this.favoriteProductIds.delete(productId);
+            // this.cartService.cartStateChanged$.next();
+          }
+        })
+      );
+       }
+
+  addFavorite(productId: string): Observable<FavoriteType | DefaultResponseType> {
+    return this.http.post<FavoriteType | DefaultResponseType>(environment.api + 'favorites', {productId})
+      .pipe(
+        tap((data: FavoriteType | DefaultResponseType) => {
+          if (!((data as DefaultResponseType).error !== undefined)) {
+            this.favoriteProductIds.add(productId)
+            // this.cartService.cartStateChanged$.next();
+          }
+        })
+      );
   }
 
-  addFavorite(productId: string): Observable<FavoriteType|DefaultResponseType> {
-    return this.http.post<FavoriteType|DefaultResponseType>(environment.api + 'favorites', {productId});
+  isProductInFavorite(productId: string): boolean {
+    return  this.favoriteProductIds.has(productId);
   }
 
+  private syncLocalFavoriteState(data: FavoriteType[]) {
+    this.favoriteProductIds.clear();
+    data.forEach(item => {
+      this.favoriteProductIds.add(item.id);
+    });
+    // this.cartService.cartStateChanged$.next();
+  }
 
 }
