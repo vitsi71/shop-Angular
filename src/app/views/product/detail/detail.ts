@@ -7,6 +7,9 @@ import {environment} from '../../../../environments/environment';
 import {CartType} from '../../../../types/cart.type';
 import {CartService} from '../../../shared/services/cart.service';
 import {Subscription} from 'rxjs';
+import {FavoriteService} from '../../../shared/services/favorite.service';
+import {FavoriteType} from '../../../../types/favorite.type';
+import {DefaultResponseType} from '../../../../types/default-response.type';
 
 @Component({
   selector: 'app-detail',
@@ -21,6 +24,7 @@ export class Detail implements OnInit, OnDestroy {
   serverStaticPath: string = environment.serverStaticPath; //шаблон URL для запроса картинки в HTML
 
   isInCart: WritableSignal<boolean> = signal<boolean>(false)
+  isInFavorite: WritableSignal<boolean> = signal<boolean>(false)
   count: number = 1;
   private cartStateSubscription: Subscription | null = null;
 
@@ -51,7 +55,7 @@ export class Detail implements OnInit, OnDestroy {
     nav: false
   }
 
-  constructor(private productService: ProductService, private cartService: CartService, private activatedRoute: ActivatedRoute) {
+  constructor(private favoriteService: FavoriteService, private productService: ProductService, private cartService: CartService, private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -98,7 +102,7 @@ export class Detail implements OnInit, OnDestroy {
       this.cartService.updateCart(this.product()!.id, this.count)
         .subscribe((data: CartType) => {
 
-          this.product()!.countInCart=this.count;
+          this.product()!.countInCart = this.count;
           // this.isInCart.set(this.count);
           this.isInCart.set(true);
         })
@@ -122,7 +126,7 @@ export class Detail implements OnInit, OnDestroy {
     this.count = 1;
     this.cartService.updateCart(this.product()!.id, 0)
       .subscribe((data: CartType) => {
-        this.product()!.countInCart=0;
+        this.product()!.countInCart = 0;
         // this.isInCart.set(0);
         this.isInCart.set(false);
 
@@ -147,6 +151,18 @@ export class Detail implements OnInit, OnDestroy {
     this.count = quantityInCart > 0 ? quantityInCart : 1;
     this.isInCart.set(this.cartService.isProductInCart(currentProduct.id));
     this.product.set({...currentProduct});
+  }
+
+  addToFavorite() {
+    this.favoriteService.addFavorite(this.product()!.id)
+      .subscribe((data: FavoriteType | DefaultResponseType) => {
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
+        this.product()!.isInFavorite = true;
+        this.isInFavorite.set(true);
+
+      })
   }
 
 }

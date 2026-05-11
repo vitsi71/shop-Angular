@@ -29,6 +29,13 @@ export class Favorite implements OnInit {
   }
 
   removeFromFavorite(id:string){
+this.favoriteService.removeFavorite(id)
+  .subscribe((data:DefaultResponseType)=>{
+    if(data.error){
+      throw new Error(data.message);
+    }
+    this.productsInFavorite.set(this.productsInFavorite().filter(item=>item.id !== id)); // оставляет все, что соответствует условию
+  })
 
   }
 }

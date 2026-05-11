@@ -6,6 +6,18 @@
   padding-bottom: 110px;
 
   .container {
+    .favorite-empty{
+      margin-top: 20px;
+      margin-bottom: 100px;
+      div{
+        font-size: 16px;
+      }
+      .button{
+        width: 255px;
+        margin-top: 10px;
+      }
+
+    }
     .favorite-title {
       @include head-lora-36;
       color: $green-text-color;
