@@ -26,6 +26,7 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
   isInCart: WritableSignal<boolean> = signal<boolean>(false);
   isInFavorite: WritableSignal<boolean> = signal<boolean>(false);
   private cartStateSubscription: Subscription | null = null;
+  private favoriteStateSubscription: Subscription | null = null;
 
 
   constructor(private _snackBar: MatSnackBar, private authService: AuthService, private favoriteService: FavoriteService,
@@ -39,6 +40,10 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
       this.product.countInCart = this.countInCart;
       this.syncCartState();
     });
+    this.syncCartState();
+    this.favoriteStateSubscription = this.favoriteService.favoriteStateChanged$.subscribe(() => {
+      this.syncCartState();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -49,6 +54,7 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this.cartStateSubscription?.unsubscribe();
+    this.favoriteStateSubscription?.unsubscribe();
   }
 
   addToCart() {

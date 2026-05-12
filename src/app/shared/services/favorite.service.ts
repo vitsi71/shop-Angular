@@ -4,7 +4,6 @@ import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {FavoriteType} from '../../../types/favorite.type';
 import {DefaultResponseType} from '../../../types/default-response.type';
-import {CartService} from './cart.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +13,7 @@ export class FavoriteService {
   favoriteProductIds: Set<string> = new Set<string>();
   favoriteStateChanged$: Subject<void> = new Subject<void>();
 
-  constructor(private http: HttpClient,private cartService:CartService) {
+  constructor(private http: HttpClient) {
   }
 
   getFavorites(): Observable<FavoriteType[] | DefaultResponseType> {
@@ -34,7 +33,7 @@ export class FavoriteService {
         tap((data: DefaultResponseType) => {
           if (!data.error !== undefined) {
             this.favoriteProductIds.delete(productId);
-            // this.cartService.cartStateChanged$.next();
+            this.favoriteStateChanged$.next();
           }
         })
       );
@@ -46,7 +45,7 @@ export class FavoriteService {
         tap((data: FavoriteType | DefaultResponseType) => {
           if (!((data as DefaultResponseType).error !== undefined)) {
             this.favoriteProductIds.add(productId)
-            // this.cartService.cartStateChanged$.next();
+            this.favoriteStateChanged$.next();
           }
         })
       );
@@ -61,7 +60,7 @@ export class FavoriteService {
     data.forEach(item => {
       this.favoriteProductIds.add(item.id);
     });
-    // this.cartService.cartStateChanged$.next();
+    this.favoriteStateChanged$.next();
   }
 
 }

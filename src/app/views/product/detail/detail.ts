@@ -29,6 +29,7 @@ export class Detail implements OnInit, OnDestroy {
   isInFavorite: WritableSignal<boolean> = signal<boolean>(false);
   count: number = 1;
   private cartStateSubscription: Subscription | null = null;
+  private favoriteStateSubscription: Subscription | null = null;
 
   // настройки для карусели продуктов
   customOptions: OwlOptions = {
@@ -64,6 +65,10 @@ export class Detail implements OnInit, OnDestroy {
     this.cartStateSubscription = this.cartService.cartStateChanged$.subscribe(() => {
       this.syncCurrentProductWithCart();
       this.syncRecommendedProductsWithCart();
+    });
+    this.favoriteStateSubscription = this.favoriteService.favoriteStateChanged$.subscribe(() => {
+      this.syncCurrentProductWithFavorite();
+      this.syncRecommendedProductsWithFavorite();
     });
 
     this.activatedRoute.params.subscribe(params => {
@@ -108,6 +113,7 @@ export class Detail implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.cartStateSubscription?.unsubscribe();
+    this.favoriteStateSubscription?.unsubscribe();
   }
 
   updateCount(value: number) {
@@ -165,6 +171,22 @@ export class Detail implements OnInit, OnDestroy {
     currentProduct.countInCart = quantityInCart;
     this.count = quantityInCart > 0 ? quantityInCart : 1;
     this.isInCart.set(this.cartService.isProductInCart(currentProduct.id));
+    this.product.set({...currentProduct});
+  }
+
+  private syncRecommendedProductsWithFavorite() {
+    this.recommendedProducts.set(this.recommendedProducts().map(product => {
+      product.isInFavorite = this.favoriteService.isProductInFavorite(product.id);
+      return product;
+    }));
+  }
+
+  private syncCurrentProductWithFavorite() {
+    const currentProduct = this.product();
+    if (!currentProduct) {
+      return;
+    }
+    this.isInFavorite.set(this.favoriteService.isProductInFavorite(currentProduct.id));
     this.product.set({...currentProduct});
   }
 
