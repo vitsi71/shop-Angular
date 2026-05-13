@@ -171,3 +171,33 @@
     }
   }
 }
+
+.order-popup{
+  padding:100px 70px 220px;
+  position: relative;
+  text-align: center;
+  color: $green-text-color;
+  background-image: url("../../../../assets/images/page/order-image.png");
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  //width: 727px;
+
+  .order-popup-close{
+    position: absolute;
+    cursor: pointer;
+    top: 30px;
+    right: 30px;
+  }
+  .order-popup-title{
+    @include head-lora-32;
+    margin-bottom: 40px;
+  }
+  .order-popup-content div{
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+ }
+
+//::ng-deep .cdk-overlay-pane.mat-mdc-dialog-panel{
+//  max-width: none !important;
+//}

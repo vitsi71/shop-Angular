@@ -6,9 +6,11 @@ import { Order } from './order/order';
 import {SharedModule} from '../../shared/shared-module';
 import {CarouselModule} from 'ngx-owl-carousel-o';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [Cart, Order],
-  imports: [CommonModule, OrderRoutingModule, SharedModule, ReactiveFormsModule, CarouselModule],
+  imports: [CommonModule, OrderRoutingModule, SharedModule,
+    MatDialogModule,ReactiveFormsModule, CarouselModule],
 })
 export class OrderModule {}

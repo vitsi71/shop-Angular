@@ -206,22 +206,6 @@ a.button {
   }
 }
 
-
-//
-//<div class="radio-group">
-//<label class="custom-radio">
-//<input type="radio" name="option">
-//<span class="radio-icon"></span>
-//<span class="radio-text">Вариант 1</span>
-//</label>
-//<label class="custom-radio">
-//<input type="radio" name="option">
-//<span class="radio-icon"></span>
-//<span class="radio-text">Вариант 2</span>
-//</label>
-//<label class="custom-radio">
-//<input type="radio" name="option">
-//<span class="radio-icon"></span>
-//<span class="radio-text">Вариант 3</span>
-//</label>
-//</div>
+.cdk-overlay-pane.mat-mdc-dialog-panel{
+  max-width: none !important;
+}

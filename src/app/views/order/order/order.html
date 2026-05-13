@@ -11,7 +11,8 @@
             Выберите способ доставки
           </div>
           <div class="order-form-types">
-            <div (click)="changeDeliveryType(deliveryTypes.delivery)" [class.active]="deliveryType===deliveryTypes.delivery"
+            <div (click)="changeDeliveryType(deliveryTypes.delivery)"
+                 [class.active]="deliveryType===deliveryTypes.delivery"
                  class="order-form-type-item">Курьером
             </div>
             <div (click)="changeDeliveryType(deliveryTypes.self)" [class.active]="deliveryType===deliveryTypes.self"
@@ -27,23 +28,28 @@
           <div class="order-form-inputs personal-data-inputs">
 
             <input [style]="{'border-color': orderForm.get('lastName')?.invalid
-            && (orderForm.get('lastName')?.dirty || orderForm.get('lastName')?.touched) ?'red':''}" class="input" formControlName="lastName" placeholder="Фамилия"
+            && (orderForm.get('lastName')?.dirty || orderForm.get('lastName')?.touched) ?'red':''}" class="input"
+                   formControlName="lastName" placeholder="Фамилия"
                    type="text">
 
             <input [style]="{'border-color': orderForm.get('firstName')?.invalid
-            && (orderForm.get('firstName')?.dirty || orderForm.get('firstName')?.touched) ?'red':''}" class="input" formControlName="firstName" placeholder="Имя"
+            && (orderForm.get('firstName')?.dirty || orderForm.get('firstName')?.touched) ?'red':''}" class="input"
+                   formControlName="firstName" placeholder="Имя"
                    type="text">
 
             <input [style]="{'border-color': orderForm.get('fatherName')?.invalid
-            && (orderForm.get('fatherName')?.dirty || orderForm.get('fatherName')?.touched) ?'red':''}" class="input" formControlName="fatherName" placeholder="Отчество"
+            && (orderForm.get('fatherName')?.dirty || orderForm.get('fatherName')?.touched) ?'red':''}" class="input"
+                   formControlName="fatherName" placeholder="Отчество"
                    type="text">
 
             <input [style]="{'border-color': orderForm.get('phone')?.invalid
-            && (orderForm.get('phone')?.dirty || orderForm.get('phone')?.touched) ?'red':''}" class="input" formControlName="phone" placeholder="Телефон"
+            && (orderForm.get('phone')?.dirty || orderForm.get('phone')?.touched) ?'red':''}" class="input"
+                   formControlName="phone" placeholder="Телефон"
                    type="tel">
 
             <input [style]="{'border-color': orderForm.get('email')?.invalid
-            && (orderForm.get('email')?.dirty || orderForm.get('email')?.touched) ?'red':''}" class="input" formControlName="email" placeholder="E-mail"
+            && (orderForm.get('email')?.dirty || orderForm.get('email')?.touched) ?'red':''}" class="input"
+                   formControlName="email" placeholder="E-mail"
                    type="email">
 
           </div>
@@ -52,28 +58,32 @@
         @if (deliveryType !== deliveryTypes.self) {
 
           <div class="order-form-block">
-          <div class="order-form-label">
-            Заполните адрес доставки
+            <div class="order-form-label">
+              Заполните адрес доставки
+            </div>
+            <div class="order-form-inputs address-inputs">
+              <input [style]="{'border-color': orderForm.get('street')?.invalid
+            && (orderForm.get('street')?.dirty || orderForm.get('street')?.touched) ?'red':''}" class="input street"
+                     formControlName="street" placeholder="Улица"
+                     type="text">
+
+              <input [style]="{'border-color': orderForm.get('house')?.invalid
+            && (orderForm.get('house')?.dirty || orderForm.get('house')?.touched) ?'red':''}" class="input house"
+                     formControlName="house" placeholder="№ дома"
+                     type="text">
+
+              <input [style]="{'border-color': orderForm.get('entrance')?.invalid
+            && (orderForm.get('entrance')?.dirty || orderForm.get('entrance')?.touched) ?'red':''}"
+                     class="input entrance" formControlName="entrance" placeholder="Подъезд"
+                     type="text">
+
+              <input [style]="{'border-color': orderForm.get('apartment')?.invalid
+            && (orderForm.get('apartment')?.dirty || orderForm.get('apartment')?.touched) ?'red':''}"
+                     class="input apartment" formControlName="apartment" placeholder="№ квартиры"
+                     type="text">
+
+            </div>
           </div>
-          <div class="order-form-inputs address-inputs">
-            <input [style]="{'border-color': orderForm.get('street')?.invalid
-            && (orderForm.get('street')?.dirty || orderForm.get('street')?.touched) ?'red':''}" class="input street" formControlName="street" placeholder="Улица"
-                   type="text">
-
-            <input [style]="{'border-color': orderForm.get('house')?.invalid
-            && (orderForm.get('house')?.dirty || orderForm.get('house')?.touched) ?'red':''}" class="input house" formControlName="house" placeholder="№ дома"
-                   type="text">
-
-            <input [style]="{'border-color': orderForm.get('entrance')?.invalid
-            && (orderForm.get('entrance')?.dirty || orderForm.get('entrance')?.touched) ?'red':''}" class="input entrance" formControlName="entrance" placeholder="Подъезд"
-                   type="text">
-
-            <input [style]="{'border-color': orderForm.get('apartment')?.invalid
-            && (orderForm.get('apartment')?.dirty || orderForm.get('apartment')?.touched) ?'red':''}" class="input apartment" formControlName="apartment" placeholder="№ квартиры"
-                   type="text">
-
-          </div>
-        </div>
         }
 
         <div class="order-form-block">
@@ -109,7 +119,8 @@
           </div>
           <div class="order-form-inputs">
             <textarea [style]="{'border-color': orderForm.get('comment')?.invalid
-            && (orderForm.get('comment')?.dirty || orderForm.get('comment')?.touched) ?'red':''}" class="input" cols="30" formControlName="comment"
+            && (orderForm.get('comment')?.dirty || orderForm.get('comment')?.touched) ?'red':''}" class="input"
+                      cols="30" formControlName="comment"
                       placeholder="Оставьте свой комментарий..."
                       rows="5">
 
@@ -151,3 +162,28 @@
   </div>
 </div>
 
+<ng-template #popup>
+  <div class="order-popup">
+    <div class="order-popup-close" (click)="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="1.93562" y1="2.6499" x2="13.9564" y2="14.6707" stroke="#A8ABA7" stroke-linecap="round"/>
+        <line x1="13.9238" y1="2.62971" x2="1.90301" y2="14.6505" stroke="#A8ABA7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="order-popup-title">
+      Благодарим за заказ!
+    </div>
+    <div class="order-popup-content">
+      <div>
+        Ваш заказ оформлен.
+      </div>
+      <div>
+        Вся информация о заказе была выслана вам на почту.
+      </div>
+      <div>
+        Курьер свяжется с вами за два часа до доставки товара.
+      </div>
+    </div>
+
+  </div>
+</ng-template>

@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, ElementRef, inject, OnInit, signal, TemplateRef, ViewChild, WritableSignal} from '@angular/core';
 import {CartService} from '../../../shared/services/cart.service';
 import {CartType} from '../../../../types/cart.type';
 import {DefaultResponseType} from '../../../../types/default-response.type';
@@ -7,6 +7,7 @@ import {Router} from '@angular/router';
 import {DeliveryType} from '../../../../types/delivery.type';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PaymentType} from '../../../../types/payment.type';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-order',
@@ -37,7 +38,10 @@ export class Order implements OnInit {
     comment: ['']
   });
 
-  constructor(private _snackBar: MatSnackBar, private router: Router, private cartService: CartService) {
+  @ViewChild("popup") popup!: TemplateRef<ElementRef>;
+  dialogRef: MatDialogRef<any>|null=null;
+
+  constructor(private dialog: MatDialog, private _snackBar: MatSnackBar, private router: Router, private cartService: CartService) {
     this.updateDeliveryType();
   }
 
@@ -92,9 +96,16 @@ export class Order implements OnInit {
   }
 
   createOrder() {
-    if (this.orderForm.valid) {
-      console.log(this.orderForm.value);
-    }
+    // if (this.orderForm.valid) {
+    //   console.log(this.orderForm.value);
+   this.dialogRef= this.dialog.open(this.popup);
+    this.dialogRef.backdropClick()
+      .subscribe(()=> this.router.navigate(['']))
+    // }
   }
 
+  closePopup() {
+    this.dialogRef?.close();
+    this.router.navigate(['']);
+  }
 }
