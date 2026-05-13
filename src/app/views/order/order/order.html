@@ -4,15 +4,19 @@
       Оформление вашего заказа
     </div>
     <div class="order-info">
-      <div class="order-form">
+      <div [formGroup]="orderForm" class="order-form">
 
         <div class="order-form-block">
           <div class="order-form-label">
             Выберите способ доставки
           </div>
           <div class="order-form-types">
-            <div class="order-form-type-item active">Курьером</div>
-            <div class="order-form-type-item">Самовывоз</div>
+            <div (click)="changeDeliveryType(deliveryTypes.delivery)" [class.active]="deliveryType===deliveryTypes.delivery"
+                 class="order-form-type-item">Курьером
+            </div>
+            <div (click)="changeDeliveryType(deliveryTypes.self)" [class.active]="deliveryType===deliveryTypes.self"
+                 class="order-form-type-item">Самовывоз
+            </div>
           </div>
         </div>
 
@@ -21,25 +25,56 @@
             Заполните личные данные
           </div>
           <div class="order-form-inputs personal-data-inputs">
-            <input class="input" placeholder="Фамилия" type="text">
-            <input class="input" placeholder="Имя" type="text">
-            <input class="input" placeholder="Отчество" type="text">
-            <input class="input" placeholder="Телефон" type="tel">
-            <input class="input" placeholder="E-mail" type="email">
+
+            <input [style]="{'border-color': orderForm.get('lastName')?.invalid
+            && (orderForm.get('lastName')?.dirty || orderForm.get('lastName')?.touched) ?'red':''}" class="input" formControlName="lastName" placeholder="Фамилия"
+                   type="text">
+
+            <input [style]="{'border-color': orderForm.get('firstName')?.invalid
+            && (orderForm.get('firstName')?.dirty || orderForm.get('firstName')?.touched) ?'red':''}" class="input" formControlName="firstName" placeholder="Имя"
+                   type="text">
+
+            <input [style]="{'border-color': orderForm.get('fatherName')?.invalid
+            && (orderForm.get('fatherName')?.dirty || orderForm.get('fatherName')?.touched) ?'red':''}" class="input" formControlName="fatherName" placeholder="Отчество"
+                   type="text">
+
+            <input [style]="{'border-color': orderForm.get('phone')?.invalid
+            && (orderForm.get('phone')?.dirty || orderForm.get('phone')?.touched) ?'red':''}" class="input" formControlName="phone" placeholder="Телефон"
+                   type="tel">
+
+            <input [style]="{'border-color': orderForm.get('email')?.invalid
+            && (orderForm.get('email')?.dirty || orderForm.get('email')?.touched) ?'red':''}" class="input" formControlName="email" placeholder="E-mail"
+                   type="email">
+
           </div>
         </div>
 
-        <div class="order-form-block">
+        @if (deliveryType !== deliveryTypes.self) {
+
+          <div class="order-form-block">
           <div class="order-form-label">
             Заполните адрес доставки
           </div>
           <div class="order-form-inputs address-inputs">
-            <input class="input street" placeholder="Улица" type="text">
-            <input class="input house" placeholder="№ дома" type="text">
-            <input class="input entrance" placeholder="Подъезд" type="text">
-            <input class="input apartment" placeholder="№ квартиры" type="text">
+            <input [style]="{'border-color': orderForm.get('street')?.invalid
+            && (orderForm.get('street')?.dirty || orderForm.get('street')?.touched) ?'red':''}" class="input street" formControlName="street" placeholder="Улица"
+                   type="text">
+
+            <input [style]="{'border-color': orderForm.get('house')?.invalid
+            && (orderForm.get('house')?.dirty || orderForm.get('house')?.touched) ?'red':''}" class="input house" formControlName="house" placeholder="№ дома"
+                   type="text">
+
+            <input [style]="{'border-color': orderForm.get('entrance')?.invalid
+            && (orderForm.get('entrance')?.dirty || orderForm.get('entrance')?.touched) ?'red':''}" class="input entrance" formControlName="entrance" placeholder="Подъезд"
+                   type="text">
+
+            <input [style]="{'border-color': orderForm.get('apartment')?.invalid
+            && (orderForm.get('apartment')?.dirty || orderForm.get('apartment')?.touched) ?'red':''}" class="input apartment" formControlName="apartment" placeholder="№ квартиры"
+                   type="text">
+
           </div>
         </div>
+        }
 
         <div class="order-form-block">
           <div class="order-form-label payment">
@@ -48,17 +83,20 @@
 
           <div class="order-form-radio">
             <div class="order-form-radio-block">
-              <input id="card" name="option" type="radio">
+              <input formControlName="paymentType" id="card" type="radio"
+                     value="{{PaymentType.cardOnline}}">
               <span class="radio-icon"></span>
               <label for="card">Оплата банковской картой в интернет-магазине</label>
             </div>
             <div class="order-form-radio-block">
-              <input id="cashless" name="option" type="radio">
+              <input formControlName="paymentType" id="cashless" type="radio"
+                     value="{{PaymentType.cardToCourier}}">
               <span class="radio-icon"></span>
               <label for="cashless">Безналичный расчет при получении</label>
             </div>
             <div class="order-form-radio-block">
-              <input id="cash" name="option" type="radio">
+              <input formControlName="paymentType" id="cash" type="radio"
+                     value="{{PaymentType.cashToCourier}}">
               <span class="radio-icon"></span>
               <label for="cash">Наличный расчет при получении</label>
             </div>
@@ -70,7 +108,12 @@
             Комментарий к заказу (необязательно)
           </div>
           <div class="order-form-inputs">
-            <textarea class="input" cols="30" placeholder="Оставьте свой комментарий..." rows="5"></textarea>
+            <textarea [style]="{'border-color': orderForm.get('comment')?.invalid
+            && (orderForm.get('comment')?.dirty || orderForm.get('comment')?.touched) ?'red':''}" class="input" cols="30" formControlName="comment"
+                      placeholder="Оставьте свой комментарий..."
+                      rows="5">
+
+            </textarea>
           </div>
         </div>
       </div>
@@ -79,29 +122,29 @@
 
         <div class="order-details-info">
           <div class="order-details-info-title">Ваш заказ</div>
-          <div class="order-details-info-item">
-            <div class="order-details-info-item-text">Товаров:</div>
-            <div class="order-details-info-item-data">4</div>
-            <!--                <div class="order-details-info-item-data">{{ totalCount }}</div>-->
-          </div>
-          <div class="order-details-info-item">
-            <div class="order-details-info-item-text">Общая стоимость:</div>
-            <div class="order-details-info-item-data">147 BYN</div>
-            <!--                <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>-->
-          </div>
-          <div class="order-details-info-item">
-            <div class="order-details-info-item-text">Стоимость доставки:</div>
-            <div class="order-details-info-item-data">10 BYN</div>
-            <!--                <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>-->
-          </div>
-          <div class="order-details-info-item">
-            <div class="order-details-info-item-text">Итоговая стоимость:</div>
-            <div class="order-details-info-item-data">157 BYN</div>
-            <!--                <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>-->
-          </div>
+          @if (cart()) {
+
+            <div class="order-details-info-item">
+              <div class="order-details-info-item-text">Товаров:</div>
+              <div class="order-details-info-item-data">{{ totalCount }}</div>
+            </div>
+            <div class="order-details-info-item">
+              <div class="order-details-info-item-text">Общая стоимость:</div>
+              <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>
+            </div>
+            <div class="order-details-info-item">
+              <div class="order-details-info-item-text">Стоимость доставки:</div>
+              <div class="order-details-info-item-data">10 BYN</div>
+            </div>
+            <div class="order-details-info-item">
+              <div class="order-details-info-item-text">Итоговая стоимость:</div>
+              <div class="order-details-info-item-data">{{ totalAmount + 10 }} BYN</div>
+            </div>
+
+          }
         </div>
 
-        <button class="button" routerLink="/order">Подтвердить заказ</button>
+        <button (click)="createOrder()" class="button" routerLink="/order">Подтвердить заказ</button>
 
       </div>
     </div>

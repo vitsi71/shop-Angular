@@ -5,9 +5,10 @@ import { Cart } from './cart/cart';
 import { Order } from './order/order';
 import {SharedModule} from '../../shared/shared-module';
 import {CarouselModule} from 'ngx-owl-carousel-o';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [Cart, Order],
-  imports: [CommonModule, OrderRoutingModule, SharedModule, CarouselModule],
+  imports: [CommonModule, OrderRoutingModule, SharedModule, ReactiveFormsModule, CarouselModule],
 })
 export class OrderModule {}

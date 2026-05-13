@@ -1,4 +1,12 @@
-import { Component } from '@angular/core';
+import {Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
+import {CartService} from '../../../shared/services/cart.service';
+import {CartType} from '../../../../types/cart.type';
+import {DefaultResponseType} from '../../../../types/default-response.type';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Router} from '@angular/router';
+import {DeliveryType} from '../../../../types/delivery.type';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {PaymentType} from '../../../../types/payment.type';
 
 @Component({
   selector: 'app-order',
@@ -6,4 +14,87 @@ import { Component } from '@angular/core';
   templateUrl: './order.html',
   styleUrl: './order.scss',
 })
-export class Order {}
+export class Order implements OnInit {
+
+  deliveryType: DeliveryType = DeliveryType.delivery;
+  deliveryTypes: typeof DeliveryType = DeliveryType;
+  cart: WritableSignal<CartType | null> = signal<CartType | null>(null);
+  totalAmount: number = 0;
+  totalCount: number = 0;
+  protected readonly PaymentType: typeof PaymentType = PaymentType;
+  private fb: FormBuilder = inject(FormBuilder);
+  orderForm: FormGroup = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    fatherName: [''],
+    phone: ['', Validators.required],
+    paymentType: [PaymentType.cashToCourier, Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    street: [''],
+    house: [''],
+    entrance: [''],
+    apartment: [''],
+    comment: ['']
+  });
+
+  constructor(private _snackBar: MatSnackBar, private router: Router, private cartService: CartService) {
+    this.updateDeliveryType();
+  }
+
+
+  ngOnInit() {
+    this.cartService.getCart()
+      .subscribe((dataCart: CartType | DefaultResponseType) => {
+        if ((dataCart as DefaultResponseType).error !== undefined) {
+          throw new Error((dataCart as DefaultResponseType).message);
+        }
+        this.cart.set(dataCart as CartType);
+        if (!this.cart() || (this.cart()?.items.length === 0)) {
+          this.router.navigate(['/']);
+          this._snackBar.open("Корзина пустая");
+          return;
+        }
+        this.calculateTotal();
+      })
+  }
+
+  calculateTotal() {
+    this.totalAmount = 0;
+    this.totalCount = 0;
+    if (this.cart()) {
+      this.cart()?.items.forEach(item => {
+          this.totalAmount += item.quantity * item.product.price;
+          this.totalCount += item.quantity;
+        }
+      )
+    }
+  }
+
+  changeDeliveryType(type: DeliveryType) {
+    this.deliveryType = type;
+    this.updateDeliveryType();
+  }
+
+  updateDeliveryType() {
+    if (this.deliveryType === DeliveryType.delivery) {
+      this.orderForm.get('street')?.setValidators(Validators.required);
+      this.orderForm.get('house')?.setValidators(Validators.required);
+    } else {
+      this.orderForm.get('street')?.removeValidators(Validators.required);
+      this.orderForm.get('house')?.removeValidators(Validators.required);
+      this.orderForm.get('street')?.setValue('');
+      this.orderForm.get('house')?.setValue('');
+      this.orderForm.get('entrance')?.setValue('');
+      this.orderForm.get('apartment')?.setValue('');
+    }
+    this.orderForm.get('street')?.updateValueAndValidity();
+    this.orderForm.get('house')?.updateValueAndValidity();
+  }
+
+  createOrder() {
+    if (this.orderForm.valid) {
+      console.log(this.orderForm.value);
+    }
+  }
+
+}
