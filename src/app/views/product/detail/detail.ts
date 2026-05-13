@@ -76,7 +76,10 @@ export class Detail implements OnInit, OnDestroy {
         .subscribe((data: ProductType) => {
           this.product.set(data);
           this.cartService.getCart()
-            .subscribe((dataCart: CartType) => {
+            .subscribe((dataCart: CartType | DefaultResponseType) => {
+              if ((dataCart as DefaultResponseType).error !== undefined) {
+                throw new Error((dataCart as DefaultResponseType).message);
+              }
               const quantityInCart = this.cartService.getProductQuantity(data.id);
               this.product()!.countInCart = quantityInCart;
               this.count = quantityInCart > 0 ? quantityInCart : 1;
@@ -121,7 +124,10 @@ export class Detail implements OnInit, OnDestroy {
     if (this.product()?.countInCart) {
       // this.product()!.countInCart = this.count;
       this.cartService.updateCart(this.product()!.id, this.count)
-        .subscribe((data: CartType) => {
+        .subscribe((data: CartType | DefaultResponseType) => {
+          if ((data as DefaultResponseType).error !== undefined) {
+            throw new Error((data as DefaultResponseType).message);
+          }
 
           this.product()!.countInCart = this.count;
           // this.isInCart.set(this.count);
@@ -133,7 +139,10 @@ export class Detail implements OnInit, OnDestroy {
   addToCart() {
     // this.product()!.countInCart = this.count;
     this.cartService.updateCart(this.product()!.id, this.count)
-      .subscribe((data: CartType) => {
+      .subscribe((data: CartType | DefaultResponseType) => {
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
 
         this.product()!.countInCart = this.count;
         this.isInCart.set(true);
@@ -146,7 +155,10 @@ export class Detail implements OnInit, OnDestroy {
     // this.product()!.countInCart = 0;
     this.count = 1;
     this.cartService.updateCart(this.product()!.id, 0)
-      .subscribe((data: CartType) => {
+      .subscribe((data: CartType | DefaultResponseType) => {
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
         this.product()!.countInCart = 0;
         // this.isInCart.set(0);
         this.isInCart.set(false);

@@ -59,7 +59,10 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
 
   addToCart() {
     this.cartService.updateCart(this.product.id, this.count)
-      .subscribe((data: CartType) => {
+      .subscribe((data: CartType | DefaultResponseType) => {
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
         this.countInCart = this.count;
         this.product.countInCart = this.count;
         this.isInCart.set(true);
@@ -70,7 +73,10 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
     this.count = value;
     if (this.isInCart()) {
       this.cartService.updateCart(this.product.id, this.count)
-        .subscribe((data: CartType) => {
+        .subscribe((data: CartType | DefaultResponseType) => {
+          if ((data as DefaultResponseType).error !== undefined) {
+            throw new Error((data as DefaultResponseType).message);
+          }
           this.countInCart = this.count;
           this.product.countInCart = this.count;
           this.isInCart.set(true);
@@ -80,7 +86,10 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
 
   removeFromCart() {
     this.cartService.updateCart(this.product.id, 0)
-      .subscribe((data: CartType) => {
+      .subscribe((data: CartType | DefaultResponseType) => {
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
         this.countInCart = 0;
         this.product.countInCart = 0;
         this.count = 1;

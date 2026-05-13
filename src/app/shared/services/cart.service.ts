@@ -1,53 +1,68 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, Subject, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {CartType} from '../../../types/cart.type';
+import {DefaultResponseType} from '../../../types/default-response.type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
 
-  count:number=0;
-  count$:Subject<number>=new Subject<number>();
+  count: number = 0;
+  count$: Subject<number> = new Subject<number>();
   cartStateChanged$: Subject<void> = new Subject<void>();
   private cartProductQuantities: Map<string, number> = new Map<string, number>();
 
-  constructor(private http:HttpClient) {
+  constructor(private http: HttpClient) {
   }
-  getCart():Observable<CartType>{
-    return this.http.get<CartType>(environment.api + 'cart',{withCredentials:true})
+
+  getCart(): Observable<CartType | DefaultResponseType> {
+    return this.http.get<CartType | DefaultResponseType>(environment.api + 'cart', {withCredentials: true})
       .pipe(
         tap(data => {
-          this.syncLocalCartState(data);
+          if (!data.hasOwnProperty('error')) {
+            this.syncLocalCartState(data as CartType);
+          }
         })
       );
     //{withCredentials:true}  это параметр, который указывает браузеру включать учётные данные
     // (cookies, авторизационные заголовки, TLS-сертификаты) в кросс-доменные HTTP-запросы
   }
-  getCartCount():Observable<{ count: number }>{
-    return this.http.get<{ count: number }>(environment.api + 'cart/count',{withCredentials:true})
+
+  getCartCount(): Observable<{ count: number } | DefaultResponseType> {
+    return this.http.get<{
+      count: number
+    } | DefaultResponseType>(environment.api + 'cart/count', {withCredentials: true})
       .pipe(
-        tap(data =>{
-          this.count=data.count;
-          this.count$.next(this.count);
+        tap(data => {
+          if (!data.hasOwnProperty('error')) {
+            this.count = (data as { count: number }).count;
+            this.count$.next(this.count);
+          }
         })
       );
     //{withCredentials:true}  это параметр, который указывает браузеру включать учётные данные
     // (cookies, авторизационные заголовки, TLS-сертификаты) в кросс-доменные HTTP-запросы
   }
-  updateCart(productId:string,quantity:number):Observable<CartType>{
-    return this.http.post<CartType>(environment.api + 'cart',{productId,quantity},{withCredentials:true})
+
+  updateCart(productId: string, quantity: number): Observable<CartType | DefaultResponseType> {
+    return this.http.post<CartType | DefaultResponseType>(environment.api + 'cart', {
+      productId,
+      quantity
+    }, {withCredentials: true})
       .pipe(
-        tap(data =>{
-          this.syncLocalCartState(data);
+        tap(data => {
+          if (!data.hasOwnProperty('error')) {
+            this.syncLocalCartState(data as CartType);
+          }
         })
       );
   }
 
   isProductInCart(productId: string): boolean {
-    return  this.cartProductQuantities.has(productId);
+    return this.cartProductQuantities.has(productId);
     // return this.cartProductIds.has(productId);
   }
 
