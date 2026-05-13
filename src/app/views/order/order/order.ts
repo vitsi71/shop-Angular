@@ -139,7 +139,8 @@ export class Order implements OnInit {
             }
             this.dialogRef = this.dialog.open(this.popup);
             this.dialogRef.backdropClick()
-              .subscribe(() => this.router.navigate(['']))
+              .subscribe(() => this.router.navigate(['']));
+            this.cartService.setCount(0);
           },
           error: (errResponse: HttpErrorResponse) => {
             if (errResponse.error && errResponse.error.message) {
@@ -149,7 +150,9 @@ export class Order implements OnInit {
             }
           }
         });
-
+    } else {
+      this.orderForm.markAllAsTouched();// иммитируем обход всех полей для отображения ошибок валидации
+      this._snackBar.open('Заполните необходимые поля');
     }
   }
 

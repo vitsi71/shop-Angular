@@ -10,7 +10,7 @@ import {DefaultResponseType} from '../../../types/default-response.type';
 })
 export class CartService {
 
-  count: number = 0;
+  private count: number = 0;
   count$: Subject<number> = new Subject<number>();
   cartStateChanged$: Subject<void> = new Subject<void>();
   private cartProductQuantities: Map<string, number> = new Map<string, number>();
@@ -31,6 +31,11 @@ export class CartService {
     // (cookies, авторизационные заголовки, TLS-сертификаты) в кросс-доменные HTTP-запросы
   }
 
+  setCount(count: number) {
+    this.count = count;
+    this.count$.next(this.count);
+  }
+
   getCartCount(): Observable<{ count: number } | DefaultResponseType> {
     return this.http.get<{
       count: number
@@ -38,8 +43,7 @@ export class CartService {
       .pipe(
         tap(data => {
           if (!data.hasOwnProperty('error')) {
-            this.count = (data as { count: number }).count;
-            this.count$.next(this.count);
+            this.setCount(this.count);
           }
         })
       );
@@ -71,15 +75,15 @@ export class CartService {
   }
 
   private syncLocalCartState(data: CartType) {
-    this.count = 0;
+    let count = 0;
     // this.cartProductIds.clear();
     this.cartProductQuantities.clear();
     data.items.forEach(item => {
-      this.count += item.quantity;
+      count += item.quantity;
       // this.cartProductIds.add(item.product.id);
       this.cartProductQuantities.set(item.product.id, item.quantity);
     });
-    this.count$.next(this.count);
+    this.setCount(count);
     this.cartStateChanged$.next();
   }
 }
