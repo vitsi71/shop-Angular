@@ -135,3 +135,93 @@ a.button {
     }
   }
 }
+
+
+.order-form-radio {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-form-radio-block {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.order-form-radio-block input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-icon {
+  position: relative;
+  height: 18px !important;
+  width: 18px !important;;
+  border: 2px solid #2A592E;
+  border-radius: 50%;
+  margin-right: 12px;
+  transition: border-color 0.2s ease-in-out;
+  box-sizing: border-box;
+}
+
+.order-form-radio-block:hover .radio-icon {
+  border-color: #377A3EFF;
+}
+
+.order-form-radio-block input:checked ~ .radio-icon {
+  border-color: #2A592E;
+}
+
+.radio-icon:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2A592E;
+  transition: transform 0.2s ease-in-out;
+}
+
+.order-form-radio-block input:checked ~ .radio-icon:after {
+  display: block;
+  animation: radioSelect 0.3s ease-out;
+}
+
+@keyframes radioSelect {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+
+//
+//<div class="radio-group">
+//<label class="custom-radio">
+//<input type="radio" name="option">
+//<span class="radio-icon"></span>
+//<span class="radio-text">Вариант 1</span>
+//</label>
+//<label class="custom-radio">
+//<input type="radio" name="option">
+//<span class="radio-icon"></span>
+//<span class="radio-text">Вариант 2</span>
+//</label>
+//<label class="custom-radio">
+//<input type="radio" name="option">
+//<span class="radio-icon"></span>
+//<span class="radio-text">Вариант 3</span>
+//</label>
+//</div>

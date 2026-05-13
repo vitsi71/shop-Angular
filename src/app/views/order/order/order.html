@@ -1,1 +1,110 @@
-<p>order works!</p>
+<div class="order">
+  <div class="container">
+    <div class="order-title">
+      Оформление вашего заказа
+    </div>
+    <div class="order-info">
+      <div class="order-form">
+
+        <div class="order-form-block">
+          <div class="order-form-label">
+            Выберите способ доставки
+          </div>
+          <div class="order-form-types">
+            <div class="order-form-type-item active">Курьером</div>
+            <div class="order-form-type-item">Самовывоз</div>
+          </div>
+        </div>
+
+        <div class="order-form-block">
+          <div class="order-form-label">
+            Заполните личные данные
+          </div>
+          <div class="order-form-inputs personal-data-inputs">
+            <input class="input" placeholder="Фамилия" type="text">
+            <input class="input" placeholder="Имя" type="text">
+            <input class="input" placeholder="Отчество" type="text">
+            <input class="input" placeholder="Телефон" type="tel">
+            <input class="input" placeholder="E-mail" type="email">
+          </div>
+        </div>
+
+        <div class="order-form-block">
+          <div class="order-form-label">
+            Заполните адрес доставки
+          </div>
+          <div class="order-form-inputs address-inputs">
+            <input class="input street" placeholder="Улица" type="text">
+            <input class="input house" placeholder="№ дома" type="text">
+            <input class="input entrance" placeholder="Подъезд" type="text">
+            <input class="input apartment" placeholder="№ квартиры" type="text">
+          </div>
+        </div>
+
+        <div class="order-form-block">
+          <div class="order-form-label payment">
+            Выберите способ оплаты
+          </div>
+
+          <div class="order-form-radio">
+            <div class="order-form-radio-block">
+              <input id="card" name="option" type="radio">
+              <span class="radio-icon"></span>
+              <label for="card">Оплата банковской картой в интернет-магазине</label>
+            </div>
+            <div class="order-form-radio-block">
+              <input id="cashless" name="option" type="radio">
+              <span class="radio-icon"></span>
+              <label for="cashless">Безналичный расчет при получении</label>
+            </div>
+            <div class="order-form-radio-block">
+              <input id="cash" name="option" type="radio">
+              <span class="radio-icon"></span>
+              <label for="cash">Наличный расчет при получении</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-form-block">
+          <div class="order-form-label">
+            Комментарий к заказу (необязательно)
+          </div>
+          <div class="order-form-inputs">
+            <textarea class="input" cols="30" placeholder="Оставьте свой комментарий..." rows="5"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-details">
+
+        <div class="order-details-info">
+          <div class="order-details-info-title">Ваш заказ</div>
+          <div class="order-details-info-item">
+            <div class="order-details-info-item-text">Товаров:</div>
+            <div class="order-details-info-item-data">4</div>
+            <!--                <div class="order-details-info-item-data">{{ totalCount }}</div>-->
+          </div>
+          <div class="order-details-info-item">
+            <div class="order-details-info-item-text">Общая стоимость:</div>
+            <div class="order-details-info-item-data">147 BYN</div>
+            <!--                <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>-->
+          </div>
+          <div class="order-details-info-item">
+            <div class="order-details-info-item-text">Стоимость доставки:</div>
+            <div class="order-details-info-item-data">10 BYN</div>
+            <!--                <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>-->
+          </div>
+          <div class="order-details-info-item">
+            <div class="order-details-info-item-text">Итоговая стоимость:</div>
+            <div class="order-details-info-item-data">157 BYN</div>
+            <!--                <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>-->
+          </div>
+        </div>
+
+        <button class="button" routerLink="/order">Подтвердить заказ</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
