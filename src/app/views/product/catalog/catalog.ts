@@ -144,16 +144,6 @@ export class Catalog implements OnInit {
 
                     return product;
                   }));
-
-                  // if (this.productsInFavorite() && this.productsInFavorite()!.length > 0) {
-                  //   this.products.set(this.products().map(product => {
-                  //     const productIsInFavorite = this.productsInFavorite()?.find(item => item.id === product.id);
-                  //     if (productIsInFavorite) {
-                  //       product.isInFavorite = true;
-                  //     }
-                  //     return product;
-                  //   }));
-
                 })
 
 
