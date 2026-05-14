@@ -1,1 +1,135 @@
-<p>info works!</p>
+<div class="info">
+  <div class="container">
+    <div class="personal-title">
+      Личный кабинет
+    </div>
+    <div class="personal-pages-selector">
+      <div class="personal-page active">Личные данные</div>
+      <div class="personal-page" routerLink="/orders">Ваши заказы</div>
+    </div>
+
+    <div [formGroup]="userInfoForm" class="data-form">
+
+      <div class="data-form-block">
+        <div class="data-form-label">
+          Личные данные
+        </div>
+        <div class="data-form-label-additional">
+          Введённые данные автоматически подставятся при оформлении заказа.
+        </div>
+
+
+        <div class="data-form-inputs personal-data-inputs">
+
+          <input [style]="{'border-color': userInfoForm.get('lastName')?.invalid
+            && (userInfoForm.get('lastName')?.dirty || userInfoForm.get('lastName')?.touched) ?'red':''}" class="input"
+                 formControlName="lastName" placeholder="Фамилия"
+                 type="text">
+
+          <input [style]="{'border-color': userInfoForm.get('firstName')?.invalid
+            && (userInfoForm.get('firstName')?.dirty || userInfoForm.get('firstName')?.touched) ?'red':''}"
+                 class="input"
+                 formControlName="firstName" placeholder="Имя"
+                 type="text">
+
+          <input [style]="{'border-color': userInfoForm.get('fatherName')?.invalid
+            && (userInfoForm.get('fatherName')?.dirty || userInfoForm.get('fatherName')?.touched) ?'red':''}"
+                 class="input"
+                 formControlName="fatherName" placeholder="Отчество"
+                 type="text">
+
+          <input [style]="{'border-color': userInfoForm.get('phone')?.invalid
+            && (userInfoForm.get('phone')?.dirty || userInfoForm.get('phone')?.touched) ?'red':''}" class="input"
+                 formControlName="phone" placeholder="Телефон"
+                 type="tel">
+
+          <input [style]="{'border-color': userInfoForm.get('email')?.invalid
+            && (userInfoForm.get('email')?.dirty || userInfoForm.get('email')?.touched) ?'red':''}" class="input"
+                 formControlName="email" placeholder="E-mail"
+                 type="email">
+
+        </div>
+      </div>
+
+      <div class="data-form-block">
+        <div class="data-form-label">
+          Адрес доставки
+        </div>
+        <div class="data-form-inputs address-inputs">
+          <input [style]="{'border-color': userInfoForm.get('street')?.invalid
+            && (userInfoForm.get('street')?.dirty || userInfoForm.get('street')?.touched) ?'red':''}"
+                 class="input street"
+                 formControlName="street" placeholder="Улица"
+                 type="text">
+
+          <input [style]="{'border-color': userInfoForm.get('house')?.invalid
+            && (userInfoForm.get('house')?.dirty || userInfoForm.get('house')?.touched) ?'red':''}" class="input house"
+                 formControlName="house" placeholder="№ дома"
+                 type="text">
+
+          <input [style]="{'border-color': userInfoForm.get('entrance')?.invalid
+            && (userInfoForm.get('entrance')?.dirty || userInfoForm.get('entrance')?.touched) ?'red':''}"
+                 class="input entrance" formControlName="entrance" placeholder="Подъезд"
+                 type="text">
+
+          <input [style]="{'border-color': userInfoForm.get('apartment')?.invalid
+            && (userInfoForm.get('apartment')?.dirty || userInfoForm.get('apartment')?.touched) ?'red':''}"
+                 class="input apartment" formControlName="apartment" placeholder="№ квартиры"
+                 type="text">
+        </div>
+      </div>
+
+
+      <div class="data-form-block">
+        <div class="data-form-label">
+          Предпочитаемый способ доставки
+        </div>
+        <div class="data-form-types">
+          <div (click)="changeDeliveryType(deliveryTypes.delivery)"
+               [class.active]="deliveryType===deliveryTypes.delivery"
+               class="data-form-type-item">Курьером
+          </div>
+          <div (click)="changeDeliveryType(deliveryTypes.self)" [class.active]="deliveryType===deliveryTypes.self"
+               class="data-form-type-item">Самовывоз
+          </div>
+        </div>
+      </div>
+
+      <div class="data-form-block">
+        <div class="data-form-label payment">
+          Предпочитаемый способ оплаты
+        </div>
+
+        <div class="data-form-radio">
+          <div class="data-form-radio-block">
+            <input formControlName="paymentType" id="card" type="radio"
+                   value="{{PaymentType.cardOnline}}">
+            <span class="radio-icon"></span>
+            <label for="card">Оплата банковской картой в интернет-магазине</label>
+          </div>
+          <div class="data-form-radio-block">
+            <input formControlName="paymentType" id="cashless" type="radio"
+                   value="{{PaymentType.cardToCourier}}">
+            <span class="radio-icon"></span>
+            <label for="cashless">Безналичный расчет при получении</label>
+          </div>
+          <div class="data-form-radio-block">
+            <input formControlName="paymentType" id="cash" type="radio"
+                   value="{{PaymentType.cashToCourier}}">
+            <span class="radio-icon"></span>
+            <label for="cash">Наличный расчет при получении</label>
+          </div>
+        </div>
+      </div>
+
+      <button (click)="updateUserInfo()" [disabled]="!(userInfoForm.dirty && userInfoForm.valid)" class="button">
+        Сохранить
+      </button>
+    </div>
+
+
+  </div>
+  <div class="page-image">
+    <img alt="flower" src="/assets/images/page/main.png">
+  </div>
+</div>

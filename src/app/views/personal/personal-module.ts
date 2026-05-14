@@ -1,14 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { PersonalRoutingModule } from './personal-routing-module';
-import { Favorite } from './favorite/favorite';
-import { Info } from './info/info';
-import { Orders } from './orders/orders';
+import {PersonalRoutingModule} from './personal-routing-module';
+import {Favorite} from './favorite/favorite';
+import {Info} from './info/info';
+import {Orders} from './orders/orders';
 import {SharedModule} from '../../shared/shared-module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [Favorite, Info, Orders],
-  imports: [CommonModule, PersonalRoutingModule,SharedModule],
+  imports: [CommonModule, PersonalRoutingModule, SharedModule, FormsModule, ReactiveFormsModule],
 })
 export class PersonalModule {}
