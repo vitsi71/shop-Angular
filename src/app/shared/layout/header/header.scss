@@ -41,7 +41,7 @@ header.header {
 
             a {
               font-size: 16px;
-              color:$green-text-color;
+              color: $green-text-color;
               text-decoration: none;
               cursor: pointer;
 
@@ -150,6 +150,55 @@ header.header {
           height: 16px;
           left: 15px;
           top: 11px;
+        }
+
+        .search-products {
+          position: absolute;
+          right: 0;
+          top: 61px;
+          width: 400px;
+          border-radius: 5px;
+          border: 1px solid #ebebeb;
+          background-color: #fff;
+
+          .search-product {
+            padding: 12px 23px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: #fff;
+
+            &:first-child {
+              border-radius: 5px 5px 0 0;
+            }
+
+            &:last-child {
+              border-radius: 0 0 5px 5px;
+            }
+
+            .search-product-image {
+              border-radius: 5px;
+              width: 40px;
+              height: 40px;
+              margin-right: 25px;
+              background-position: center;
+              background-size: cover;
+            }
+
+            .search-product-name {
+              color: #8e8e8e;
+              font-size: 16px;
+              line-height: 130%;
+            }
+
+            &:hover {
+              background-color: #ebebeb;
+
+              .search-product-name {
+                color: #000;
+              }
+            }
+          }
         }
       }
 

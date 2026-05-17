@@ -9,10 +9,10 @@
           <nav>
             <ul>
               <li>
-                <a routerLink ='/'>Главная</a>
+                <a routerLink='/'>Главная</a>
               </li>
               <li>
-                <a routerLink ='/catalog'>Каталог</a>
+                <a routerLink='/catalog'>Каталог</a>
               </li>
               <li>
                 <a>Отзывы</a>
@@ -114,7 +114,18 @@
           </nav>
         </div>
         <div class="header-bottom-search">
-          <input type="text" placeholder="Начните искать">
+          <input [formControl]="searchField" placeholder="Начните искать" type="text">
+          @if (showedSearch() && products() && products().length > 0) {
+            <div class="search-products">
+              @for (product of products(); track product.id) {
+                <div (click)="selectProduct(product.url)" class="search-product">
+                  <div class="search-product-image"
+                       style="background-image: url({{serverStaticPath + product.image}})"></div>
+                  <div class="search-product-name">{{ product.name }}</div>
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>
