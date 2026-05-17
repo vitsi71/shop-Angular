@@ -32,7 +32,6 @@ export class Header implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.searchField.valueChanges // через FormControl подписываемся на изменения в input и
       .pipe(
         debounceTime(500) // задержка запроса на время набора данных абонентом(чтобы избежать частых запросов на backend)

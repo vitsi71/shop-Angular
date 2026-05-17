@@ -1,14 +1,11 @@
-import {
-  HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest, provideHttpClient,
-  withInterceptors
-}
-  from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest} from '@angular/common/http';
 import {inject} from '@angular/core';
-import {catchError, Observable, switchMap, throwError} from 'rxjs';
+import {catchError, finalize, Observable, switchMap, throwError} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthService} from './auth.service';
 import {LoginResponseType} from '../../../types/login-response.type';
 import {DefaultResponseType} from '../../../types/default-response.type';
+import {LoaderService} from '../../shared/services/loader.service';
 
 // чтобы interceptor заработал в app.module в секцию providers: нужно добавить
 // provideHttpClient(withInterceptors([authInterceptor])),
@@ -17,7 +14,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // в запросы в заголовок подставляем accessToken
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
+  const loaderService: LoaderService = inject(LoaderService);
   const tokens: { accessToken: string | null, refreshToken: string | null } = authService.getTokens();
+  loaderService.show();//включаем индикатор загрузки с каждым запросом
   if (tokens && tokens.accessToken) {
     const authReq = req.clone({
       headers: req.headers.set('x-access-token', tokens.accessToken)
@@ -32,10 +31,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return hendle401Error(authReq, next, authService, router);
           }
           return throwError((): HttpErrorResponse => err)
-        })
+        }),
+        finalize(() => loaderService.hide()) //выключаем индикатор загрузки не зависимо от результатов запроса
+
       );
   }
-  return next(req);
+  return next(req)
+    .pipe(finalize(() => loaderService.hide()));//выключаем индикатор загрузки не зависимо от результатов запроса
 };
 
 

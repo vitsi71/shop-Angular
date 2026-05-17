@@ -33,7 +33,7 @@ export class CartService {
 
   setCount(count: number) {
     this.count = count;
-    this.count$.next(this.count);
+    this.count$.next(count);
   }
 
   getCartCount(): Observable<{ count: number } | DefaultResponseType> {

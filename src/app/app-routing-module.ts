@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {Layout} from './shared/layout/layout';
 import {Main} from './views/main/main';
 import {authForwardGuard} from './core/auth/auth-forward-guard';
@@ -24,7 +24,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    anchorScrolling: 'enabled', //,{anchorScrolling:'enabled'} для скролинга по якорю на странице
+    scrollPositionRestoration: 'enabled'
+  })], //,{scrollPositionRestoration:'enabled'} для скролинга к началу на странице
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

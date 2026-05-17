@@ -209,3 +209,7 @@ a.button {
 .cdk-overlay-pane.mat-mdc-dialog-panel{
   max-width: none !important;
 }
+
+.mat-mdc-progress-spinner .mdc-circular-progress__determinate-circle, .mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: #648F64 !important;
+}
