@@ -112,9 +112,6 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
     this.count = 1;
     this.isInCart.set(false);
 
-
-
-
   }
 
   updateFavorite() {

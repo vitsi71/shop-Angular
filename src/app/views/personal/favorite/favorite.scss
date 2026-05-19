@@ -6,44 +6,51 @@
   padding-bottom: 110px;
 
   .container {
-    .favorite-empty{
+    .favorite-empty {
       margin-top: 20px;
       margin-bottom: 100px;
-      div{
+
+      div {
         font-size: 16px;
       }
-      .button{
+
+      .button {
         width: 255px;
         margin-top: 10px;
       }
 
     }
+
     .favorite-title {
       @include head-lora-36;
       color: $green-text-color;
       margin-bottom: 35px;
     }
-    .favorite-products{
-      .favorite-product{
+
+    .favorite-products {
+      .favorite-product {
         padding-top: 15px;
         margin-top: 15px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         border-top: 1px solid #e7f1e8;
-        &:first-child{
+
+        &:first-child {
           padding-top: 0;
           margin-top: 0;
           border-top: 0;
         }
-        .favorite-product-image{
+
+        .favorite-product-image {
           border-radius: 5px;
           width: 100px;
           height: 100px;
           background-position: center;
           background-size: cover;
         }
-        .favorite-product-name{
+
+        .favorite-product-name {
           margin-left: 24px;
           font-size: 20px;
           line-height: 130%;
@@ -51,18 +58,35 @@
           width: 567px;
           margin-right: 20px;
         }
-        .favorite-product-price{
+
+        .favorite-product-price {
           width: 100px;
-          margin-right: 193px;
+          margin-right: 53px;
           font-family: $font-family;
           font-weight: 600;
           font-size: 22px;
           color: $gray-text-color;
         }
-        .favorite-product-action button{
-          width: 160px;
+
+        .favorite-product-action {
+          width: 300px;
+          justify-content: flex-end;
+          display: flex;
+
+          .favorite-product-action-inCart {
+            display: flex;
+            align-items: center;
+
+          }
+
+          button {
+            width: 160px;
+            margin-left: 20px;
+
+          }
         }
-        .favorite-product-remove{
+
+        .favorite-product-remove {
           margin-left: 60px;
           cursor: pointer;
         }

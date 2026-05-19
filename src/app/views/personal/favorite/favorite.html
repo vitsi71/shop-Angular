@@ -12,9 +12,22 @@
                  style="background-image: url({{serverStaticPath + product.image}})"></div>
             <div class="favorite-product-name">{{ product.name }}</div>
             <div class="favorite-product-price">{{ product.price }} BYN</div>
+
             <div class="favorite-product-action">
-              <button class="button" routerLink="/product/{{product.url}}">Открыть</button>
+              @if (product.countInCart) {
+                <div class="favorite-product-action-inCart">
+                  <count-selector (onCountChange)="updateCount(product.id, $event)"
+                                  [count]="product.countInCart"></count-selector>
+                  <button (click)="removeFromCart(product.id)" class="button button-transparent button-in-cart">
+                    <span>В корзине</span>
+                    <span>Удалить</span>
+                  </button>
+                </div>
+              } @else {
+                <button (click)="addToCart(product.id)" class="button">В корзину</button>
+              }
             </div>
+
             <div class="favorite-product-remove" (click)="removeFromFavorite(product.id)">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <line x1="1.93562" y1="2.6499" x2="13.9564" y2="14.6707" stroke="#A8ABA7" stroke-linecap="round"/>
