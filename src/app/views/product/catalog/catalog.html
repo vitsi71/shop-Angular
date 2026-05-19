@@ -7,7 +7,7 @@
 
     <div class="catalog-head">
       <div class="catalog-applied-filters">
-        @for (appliedFilter of appliedFilters; track  $index) {
+        @for (appliedFilter of appliedFilters; track $index) {
 
           <div class="catalog-applied-filter">
             <span>{{ appliedFilter.name }}</span>
@@ -34,7 +34,7 @@
           </svg>
         </div>
         <div class="catalog-sorting-body">
-          @for (sortingOption of sortingOptions; track  sortingOption.name) {
+          @for (sortingOption of sortingOptions; track sortingOption.name) {
             <div class="catalog-sorting-item"
                  [class.active]="this.activeParams.sort ? this.activeParams.sort === sortingOption.value:false"
                  (click)="sort(sortingOption.value)">{{ sortingOption.name }}

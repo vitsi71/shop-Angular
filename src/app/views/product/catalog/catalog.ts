@@ -1,5 +1,4 @@
-
-import {Component, OnInit, signal, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, signal, WritableSignal} from '@angular/core';
 import {ProductService} from '../../../shared/services/product.service';
 import {ProductType} from '../../../../types/product.type';
 import {CategoryService} from '../../../shared/services/category.service';
@@ -21,6 +20,7 @@ import {DefaultResponseType} from '../../../../types/default-response.type';
   standalone: false,
   templateUrl: './catalog.html',
   styleUrl: './catalog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Catalog implements OnInit {
 
@@ -73,11 +73,7 @@ export class Catalog implements OnInit {
         } else {
           this.processCatalog();
         }
-
-
       })
-
-
   }
 
   processCatalog() {
@@ -144,21 +140,15 @@ export class Catalog implements OnInit {
                         product.isInFavorite = true;
                       }
                     }
-
                     return product;
                   }));
                 })
-
-
             });
         }
       )
   }
 
-  removeAppliedFilter(appliedFilter
-                      :
-                      AppliedFilterType
-  ) {
+  removeAppliedFilter(appliedFilter: AppliedFilterType) {
     if (appliedFilter.urlParam === 'heightFrom' || appliedFilter.urlParam === 'heightTo' ||
       appliedFilter.urlParam === 'diameterFrom' || appliedFilter.urlParam === 'diameterTo') {
       delete this.activeParams[appliedFilter.urlParam];
@@ -175,10 +165,7 @@ export class Catalog implements OnInit {
     this.sortingOpen = !this.sortingOpen;
   }
 
-  sort(value
-       :
-       string
-  ) {
+  sort(value: string) {
     this.activeParams.sort = value;
 
     this.router.navigate(['/catalog'], {
@@ -186,10 +173,7 @@ export class Catalog implements OnInit {
     })
   }
 
-  openPage(page
-           :
-           number
-  ) {
+  openPage(page: number) {
     this.activeParams.page = page;
     this.router.navigate(['/catalog'], {
       queryParams: this.activeParams
