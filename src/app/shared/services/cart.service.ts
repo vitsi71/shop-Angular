@@ -41,7 +41,7 @@ export class CartService {
       count: number
     } | DefaultResponseType>(environment.api + 'cart/count', {withCredentials: true})
       .pipe(
-        tap(data => {
+        tap((data: { count: number } | DefaultResponseType) => {
           if (!data.hasOwnProperty('error')) {
             this.setCount(this.count);
           }
@@ -67,7 +67,6 @@ export class CartService {
 
   isProductInCart(productId: string): boolean {
     return this.cartProductQuantities.has(productId);
-    // return this.cartProductIds.has(productId);
   }
 
   getProductQuantity(productId: string): number {
@@ -76,11 +75,9 @@ export class CartService {
 
   private syncLocalCartState(data: CartType) {
     let count = 0;
-    // this.cartProductIds.clear();
     this.cartProductQuantities.clear();
     data.items.forEach(item => {
       count += item.quantity;
-      // this.cartProductIds.add(item.product.id);
       this.cartProductQuantities.set(item.product.id, item.quantity);
     });
     this.setCount(count);

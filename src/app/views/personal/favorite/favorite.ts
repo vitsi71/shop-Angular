@@ -33,9 +33,9 @@ export class Favorite implements OnInit, OnDestroy {
         if ((data as DefaultResponseType).error !== undefined) {
           throw new Error((data as DefaultResponseType).message);
         }
-        const fav = data as FavoriteType[];
+        const favorites = data as FavoriteType[];
         this.cartStateSubscription = this.cartService.getCart().subscribe(() => {
-          this.productsInFavorite.set(fav.map(item => ({
+          this.productsInFavorite.set(favorites.map((item: FavoriteType): FavoriteInCartType => ({
             ...item,
             countInCart: this.cartService.getProductQuantity(item.id)
           })))

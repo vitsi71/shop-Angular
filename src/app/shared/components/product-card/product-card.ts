@@ -17,7 +17,7 @@ import {FavoriteService} from '../../services/favorite.service';
   styleUrl: './product-card.scss',
 })
 export class ProductCard implements OnInit, OnChanges, OnDestroy {
-
+  isLogged = signal<boolean>(false);
   @Input() product!: ProductType;
   serverStaticPath: string = environment.serverStaticPath;
   count: number = 1;
@@ -30,10 +30,11 @@ export class ProductCard implements OnInit, OnChanges, OnDestroy {
 
 
   constructor(private _snackBar: MatSnackBar, private authService: AuthService, private favoriteService: FavoriteService,
-              private cartService:CartService ) {
+              private cartService: CartService) {
   }
 
   ngOnInit() {
+    this.isLogged.set(this.authService.getIsLoggedIn());
     this.syncCartState();
     this.cartStateSubscription = this.cartService.cartStateChanged$.subscribe(() => {
       this.countInCart = this.cartService.getProductQuantity(this.product.id);

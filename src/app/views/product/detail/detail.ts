@@ -25,6 +25,7 @@ export class Detail implements OnInit, OnDestroy {
   product: WritableSignal<ProductType | null> = signal<ProductType | null>(null);
   serverStaticPath: string = environment.serverStaticPath; //шаблон URL для запроса картинки в HTML
 
+  isLogged = signal<boolean>(false);
   isInCart: WritableSignal<boolean> = signal<boolean>(false);
   isInFavorite: WritableSignal<boolean> = signal<boolean>(false);
   count: number = 1;
@@ -62,6 +63,7 @@ export class Detail implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isLogged.set(this.authService.getIsLoggedIn());
     this.cartStateSubscription = this.cartService.cartStateChanged$.subscribe(() => {
       this.syncCurrentProductWithCart();
       this.syncRecommendedProductsWithCart();

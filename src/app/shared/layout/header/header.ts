@@ -56,8 +56,8 @@ export class Header implements OnInit {
         this.count.set((data as { count: number }).count);
       }))
     this.cartService.count$
-      .subscribe((count => {
-        this.count.set(count as number);
+      .subscribe(((count: number): void => {
+        this.count.set(count);
       }))
 
 
