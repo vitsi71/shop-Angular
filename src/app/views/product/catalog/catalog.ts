@@ -165,6 +165,10 @@ export class Catalog implements OnInit {
     this.sortingOpen = !this.sortingOpen;
   }
 
+  toggleSortingOff() {
+    this.sortingOpen = false;
+  }
+
   sort(value: string) {
     this.activeParams.sort = value;
 
@@ -191,6 +195,7 @@ export class Catalog implements OnInit {
   }
 
   openNextPage() {
+    this.activeParams.page = (this.activeParams.page !== undefined) ? this.activeParams.page : 1;
     if (this.activeParams.page && this.activeParams.page < this.pages.length) {
       this.activeParams.page++;
       this.router.navigate(['/catalog'], {

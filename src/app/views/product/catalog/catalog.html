@@ -24,7 +24,8 @@
 
       </div>
 
-      <div class="catalog-sorting" [class.open]="sortingOpen" (click)="toggleSorting()">
+      <div (click)="toggleSorting()" (mouseleave)="toggleSortingOff()" [class.open]="sortingOpen"
+           class="catalog-sorting">
         <div class="catalog-sorting-head">
           <span>Сортировать</span>
           <svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">

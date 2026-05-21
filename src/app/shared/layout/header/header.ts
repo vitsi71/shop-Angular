@@ -50,6 +50,10 @@ export class Header implements OnInit {
 
     this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged.set(isLoggedIn);
+      this.cartService.getCartCount()
+        .subscribe((data => {
+          this.count.set((data as { count: number }).count);
+        }))
     })
     this.cartService.getCartCount()
       .subscribe((data => {
